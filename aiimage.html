@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image generat0r </title>
+    <style>
+        :root {
+            --bg-deep: #0f172a;
+            --glass: rgba(30, 41, 59, 0.7);
+            --neon: #818cf8;
+            --neon-glow: #6366f1;
+            --accent: #22d3ee;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --font: system-ui, -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(34, 211, 238, 0.15) 0px, transparent 50%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .main-box {
+            width: 100%;
+            max-width: 480px;
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(to right, #c084fc, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .input-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        textarea, select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: 0.2s ease;
+        }
+
+        textarea { 
+            min-height: 120px; 
+            resize: none; 
+            line-height: 1.5;
+        }
+
+        textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--neon);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-magic {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-magic:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-magic:disabled {
+            opacity: 0.7;
+            transform: none;
+            cursor: wait;
+        }
+
+        .btn-save {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            margin-top: 16px;
+        }
+
+        .btn-save:hover {
+            background: rgba(34, 211, 238, 0.1);
+        }
+
+        .loading-area {
+            display: none;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .pulse-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--neon);
+            margin: 0 auto 16px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(99, 102, 241, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+
+        .result-area {
+            display: none;
+            margin-top: 24px;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .img-frame {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px var(--border);
+            background: rgba(0,0,0,0.2);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .status-msg {
+            display: none;
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #fca5a5;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: 40px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        footer a:hover {
+            background: rgba(34, 211, 238, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-box">
+        <h1>WASIM WEBS&lt;/&gt;</h1>
+        <p class="subtitle">Turn your wild thoughts into reality.</p>
+        
+        <div class="input-group">
+            <label>What's on your mind?</label>
+            <textarea id="prompt" placeholder="A cozy cabin in a snowy forest with warm lights..."></textarea>
+        </div>
+
+        <div class="options-grid">
+            <div class="input-group">
+                <label>Shape</label>
+                <select id="ratio">
+                    <option value="1:1">Square</option>
+                    <option value="16:9">Wide</option>
+                    <option value="9:16">Tall</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Detail Level</label>
+                <select id="quality">
+                    <option value="small">Fast</option>
+                    <option value="medium" selected>Sharp</option>
+                    <option value="large">Ultra</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="createBtn" class="btn-magic">Make it Real ✨</button>
+
+        <div id="status" class="status-msg"></div>
+
+        <div id="loader" class="loading-area">
+            <div class="pulse-circle"></div>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">Cooking up magic...</p>
+        </div>
+
+        <div id="output" class="result-area">
+            <div class="img-frame">
+                <img id="art" alt="Generated Art" />
+            </div>
+            <button id="saveBtn" class="btn-save">Download Artwork 📥</button>
+        </div>
+    </div>
+
+    <footer>
+        Developed by <a href="https://www.instagram.com/w4simz" target="_blank">@w4simz</a>
+    </footer>
+    
+    <script>
+        const dom = {
+            input: document.getElementById('prompt'),
+            ratio: document.getElementById('ratio'),
+            quality: document.getElementById('quality'),
+            btn: document.getElementById('createBtn'),
+            msg: document.getElementById('status'),
+            loader: document.getElementById('loader'),
+            box: document.getElementById('output'),
+            img: document.getElementById('art'),
+            dl: document.getElementById('saveBtn')
+        };
+
+        let activeUrl = null;
+
+        const sizes = {
+            '1:1': { small: { w: 512, h: 512 }, medium: { w: 1024, h: 1024 }, large: { w: 1536, h: 1536 } },
+            '16:9': { small: { w: 640, h: 360 }, medium: { w: 1280, h: 720 }, large: { w: 1920, h: 1080 } },
+            '9:16': { small: { w: 360, h: 640 }, medium: { w: 720, h: 1280 }, large: { w: 1080, h: 1920 } }
+        };
+
+        dom.btn.onclick = async () => {
+            const text = dom.input.value.trim();
+            if (!text) {
+                notify("Hey, you need to describe something first!");
+                return;
+            }
+
+            reset();
+            dom.loader.style.display = 'block';
+            dom.btn.disabled = true;
+
+            try {
+                const r = dom.ratio.value;
+                const q = dom.quality.value;
+                const s = sizes[r][q];
+                const seed = Math.floor(Math.random() * 1000000);
+                
+                const safePrompt = encodeURIComponent(`${text} (aspect:${r})`);
+                const api = `https://image.pollinations.ai/prompt/${safePrompt}?width=${s.w}&height=${s.h}&seed=${seed}&nologo=true`;
+
+                const resp = await fetch(api);
+                if (!resp.ok) throw new Error("Server hiccup");
+
+                const type = resp.headers.get("content-type");
+                
+                if (type && type.includes("json")) {
+                    const data = await resp.json();
+                    showArt(data.url || data.image);
+                } else {
+                    const blob = await resp.blob();
+                    const url = URL.createObjectURL(blob);
+                    showArt(url, true);
+                }
+
+            } catch (e) {
+                notify("Oops, something went wrong. Try again?");
+                console.error(e);
+                dom.loader.style.display = 'none';
+                dom.btn.disabled = false;
+            }
+        };
+
+        dom.dl.onclick = () => {
+            if (!activeUrl) return;
+            const a = document.createElement('a');
+            a.href = activeUrl;
+            a.download = `dream_${Date.now()}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+
+        async function showArt(url, isBlob = false) {
+            if (activeUrl && isBlob) URL.revokeObjectURL(activeUrl);
+            
+            if (!isBlob) {
+                try {
+                    const r = await fetch(url);
+                    const b = await r.blob();
+                    activeUrl = URL.createObjectURL(b);
+                } catch {
+                    activeUrl = url;
+                }
+            } else {
+                activeUrl = url;
+            }
+
+            dom.img.src = activeUrl;
+            dom.img.onload = () => {
+                dom.loader.style.display = 'none';
+                dom.box.style.display = 'block';
+                dom.btn.disabled = false;
+                dom.box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            };
+        }
+
+        function notify(txt) {
+            dom.msg.textContent = txt;
+            dom.msg.style.display = 'block';
+        }
+
+        function reset() {
+            dom.msg.style.display = 'none';
+            dom.box.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

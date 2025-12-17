@@ -1,0 +1,21 @@
+{
+    "name": "ig-chat-clone",
+    "version": "1.0.0",
+    "main": "server.js",
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "express": "^4.22.1",
+        "express-session": "^1.18.2",
+        "socket.io": "^4.8.1",
+        "sqlite": "^5.1.1",
+        "sqlite3": "^5.1.7"
+    },
+    "description": "",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

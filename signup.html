@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign Up • Chocogram</title>
+    <style>
+        body { font-family: sans-serif; background: #fafafa; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .signup-box { background: white; border: 1px solid #dbdbdb; width: 350px; padding: 40px; text-align: center; }
+        h1 { font-family: 'Comic Sans MS', cursive; font-size: 2rem; }
+        p { color: #8e8e8e; font-weight: bold; margin-bottom: 20px; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #dbdbdb; background: #fafafa; border-radius: 3px; box-sizing: border-box; }
+        button { width: 100%; padding: 8px; border: none; background: #0095f6; color: white; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .login-link { margin-top: 20px; border: 1px solid #dbdbdb; background: white; padding: 20px; width: 350px; text-align: center; box-sizing: border-box; }
+        a { color: #0095f6; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="signup-box">
+            <h1>Chocogram</h1>
+            <p>Sign up to talk with your friends.</p>
+            <form action="/signup" method="POST">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+            <small style="color: #8e8e8e; display:block; margin-top:15px;">A random avatar will be created for you!</small>
+        </div>
+        <div class="login-link">
+            Have an account? <a href="/login">Log in</a>
+        </div>
+    </div>
+</body>
+</html>
